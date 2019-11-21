@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,11 +23,16 @@ namespace TaskDialogStudy
         {
             // 1. Create a simple task dialog
 
-            var taskDialog = new TaskDialog();
+            var result = TaskDialog.ShowDialog(this,
+                text: "Are you sure you want to do this?",
+                mainInstruction: "Stopping thhe operation might break things...",
+                caption: "Confirmation",
+                buttons: TaskDialogButtons.Yes | TaskDialogButtons.No,
+                icon: TaskDialogIcon.Warning
+                );
 
-            // write code here...
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
 
-            taskDialog.ShowDialog(this);
         }
 
         private void button2_Click(object sender, EventArgs e)
