@@ -32,7 +32,6 @@ namespace TaskDialogStudy
                 );
 
             Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -79,9 +78,49 @@ namespace TaskDialogStudy
 
             var taskDialog = new TaskDialog();
 
-            // write code here...
+            // [!] This feels unnecessary verbose
+            taskDialog.Page.Text = "Are you sure you want to do this?";
+            taskDialog.Page.MainInstruction = "Stopping the operation might break things...";
+            taskDialog.Page.Caption = "Confirmation";
 
-            taskDialog.ShowDialog(this);
+            // [!] These are inconsistent
+            // I would expect .AllowCancel and .AllowMinimize
+            taskDialog.Page.CanBeMinimized = true; // [!] How does this work????
+            taskDialog.Page.AllowCancel = true;
+
+            // [!] This is unexpected. I was expecting something like:
+            //      taskDialog.Page.StandardButtons = TaskDialogButtons.Yes | TaskDialogButtons.No
+            // - or -
+            //      taskDialog.Page.StandardButtons.Add(TaskDialogButtons.Yes, default: true);
+            //      taskDialog.Page.StandardButtons.Add(TaskDialogButtons.No);
+            //
+            // [!] I couldn't understand the purpose of TaskDialogStandardButton, it looks like a container for
+            // TaskDialogResult, but it provides no real benefit to a caller.
+            taskDialog.Page.StandardButtons.Add(TaskDialogResult.Yes);
+            TaskDialogStandardButton button1 = taskDialog.Page.StandardButtons.Add(TaskDialogResult.No);
+            button1.DefaultButton = true;
+
+            taskDialog.Page.EnableHyperlinks = true;
+            taskDialog.Page.HyperlinkClicked += (s, e) =>
+            {
+                Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: hyperlink clicked: {e.Hyperlink}");
+            };
+
+            // [?] It took me sometime to figure how to make hyperlinks
+            var footer = new TaskDialogFooter("<a href=\"https://getdot.net/\">Download .NET!</a>");
+            taskDialog.Page.Footer = footer;
+            footer.Icon = TaskDialogIcon.Error;
+
+            // [!] The official docs calls this "Verification Text" so I was looking for
+            // a property/method with a matching name.
+            // I tried CheckBox out of desperation, and wasn't sure it would fit the bill...
+            taskDialog.Page.CheckBox = new TaskDialogCheckBox("Prompt me again")
+            {
+                Checked = true
+            };
+
+            var result = taskDialog.ShowDialog(this);
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
         }
 
         private void button4_Click(object sender, EventArgs e)
