@@ -25,7 +25,7 @@ namespace TaskDialogStudy
 
             var result = TaskDialog.ShowDialog(this,
                 text: "Are you sure you want to do this?",
-                mainInstruction: "Stopping thhe operation might break things...",
+                mainInstruction: "Stopping the operation might break things...",
                 caption: "Confirmation",
                 buttons: TaskDialogButtons.Yes | TaskDialogButtons.No,
                 icon: TaskDialogIcon.Warning
@@ -39,11 +39,35 @@ namespace TaskDialogStudy
         {
             // 2. Create a simple task dialog with custom buttons
 
+            var button1 = new TaskDialogCustomButton("&Save", "Save the document");
+            var button2 = new TaskDialogCustomButton("Do&n't save");
+            var button3 = new TaskDialogCustomButton("Cancel")
+            {
+                DefaultButton = true
+            };
+
+            // [!] The following doesn't work...
+            //
+            //var result = TaskDialog.ShowDialog(this,
+            //    text: "Are you sure you want to do this?",
+            //    mainInstruction: "Stopping the operation might break things...",
+            //    caption: "Confirmation",
+            //    buttons: button1,
+            //    icon: TaskDialogIcon.Warning
+            //    );
+
             var taskDialog = new TaskDialog();
+            
+            // [!] This feels unnecessary verbose
+            taskDialog.Page.Text = "Are you sure you want to do this?";
+            taskDialog.Page.MainInstruction = "Stopping the operation might break things...";
+            taskDialog.Page.Caption = "Confirmation";
+            taskDialog.Page.CustomButtons.Add(button1);
+            taskDialog.Page.CustomButtons.Add(button2);
+            taskDialog.Page.CustomButtons.Add(button3);
 
-            // write code here...
-
-            taskDialog.ShowDialog(this);
+            var result = taskDialog.ShowDialog(this);
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
         }
 
         private void button3_Click(object sender, EventArgs e)
