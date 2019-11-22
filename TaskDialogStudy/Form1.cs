@@ -56,7 +56,7 @@ namespace TaskDialogStudy
             //    );
 
             var taskDialog = new TaskDialog();
-            
+
             // [!] This feels unnecessary verbose
             taskDialog.Page.Text = "Are you sure you want to do this?";
             taskDialog.Page.MainInstruction = "Stopping the operation might break things...";
@@ -150,9 +150,60 @@ namespace TaskDialogStudy
 
             var taskDialog = new TaskDialog();
 
-            // write code here...
+            var seconds = 5;
 
-            taskDialog.ShowDialog(this);
+            // [!] This feels unnecessary verbose
+            taskDialog.Page.MainInstruction = "Connection lost. Reconnecting...";
+            taskDialog.Page.Text = $"Reconnecting in {seconds} seconds";
+            taskDialog.Page.Caption = "Opps";
+            taskDialog.Page.ProgressBar = new TaskDialogProgressBar
+            {
+                Minimum = 0,
+                Maximum = 100,
+                State = TaskDialogProgressBarState.Normal
+
+                // [!] How to make it Yellow?
+            };
+
+            // [!] It is difficult to show a bitmap, there should be an overload that takes typeof(Image)
+            // Perhaps simplify to
+            //      taskDialog.Page.Icon = Properties.Resource1.Network;
+            taskDialog.Page.Icon = new TaskDialogIcon(Icon.FromHandle(Properties.Resource1.Network.GetHicon()));
+
+            var button1 = new TaskDialogCustomButton("&Reconnect now", "Save the document");
+            var button2 = new TaskDialogCustomButton("Cancel");
+            taskDialog.Page.CustomButtons.Add(button1);
+            taskDialog.Page.CustomButtons.Add(button2);
+
+            var interval = taskDialog.Page.ProgressBar.Maximum / seconds;
+            var timer = new Timer();
+            timer.Interval = interval;
+            timer.Tick += (s, e) =>
+            {
+                taskDialog.Page.ProgressBar.Value++;
+
+                if (taskDialog.Page.ProgressBar.Value % interval == 0)
+                {
+                    seconds--;
+                    taskDialog.Page.Text = $"Reconnecting in {seconds} seconds";
+                }
+
+
+                if (taskDialog.Page.ProgressBar.Value >= taskDialog.Page.ProgressBar.Maximum)
+                {
+                    timer.Stop();
+                    taskDialog.Close();
+                }
+            };
+            timer.Start();
+
+            taskDialog.Closed += (s, e) =>
+            {
+                timer.Stop();
+            };
+
+            var result = taskDialog.ShowDialog(this);
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
         }
 
         private void button6_Click(object sender, EventArgs e)
