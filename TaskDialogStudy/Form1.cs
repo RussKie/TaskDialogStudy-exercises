@@ -129,9 +129,19 @@ namespace TaskDialogStudy
 
             var taskDialog = new TaskDialog();
 
-            // write code here...
+            taskDialog.Page.Text = "What level of difficulty do you want to play?";
+            taskDialog.Page.Caption = "Minesweeper";
+            // [?] Sadly this doesn't work
+            //taskDialog.Page.Footer = "Note"; 
+            taskDialog.Page.Footer = new TaskDialogFooter("Note: you can change the difficulty level later by clicking Options on the Game menu");
 
-            taskDialog.ShowDialog(this);
+            taskDialog.Page.CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks;
+            var button1 = taskDialog.Page.CustomButtons.Add("&Beginner", "10 mines, 9 x 9 title grid");
+            var button2 = taskDialog.Page.CustomButtons.Add("&Intermediate", "10 mines, 1 x 16 title grid");
+            var button3 = taskDialog.Page.CustomButtons.Add("I&nsane", "259 mines, 16 x 30 title grid");
+
+            var result = taskDialog.ShowDialog(this);
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
         }
 
         private void button5_Click(object sender, EventArgs e)
