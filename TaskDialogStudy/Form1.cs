@@ -85,7 +85,7 @@ namespace TaskDialogStudy
 
             // [!] These are inconsistent
             // I would expect .AllowCancel and .AllowMinimize
-            taskDialog.Page.CanBeMinimized = true; // [!] How does this work????
+            taskDialog.Page.AllowMinimize = true; // [!] How does this work????
             taskDialog.Page.AllowCancel = true;
 
             // [!] This is unexpected. I was expecting something like:
@@ -219,16 +219,15 @@ namespace TaskDialogStudy
             taskDialog.Page.MainInstruction = "Clean up database?";
             taskDialog.Page.Text = "Do you really want to do a clean up?" + Environment.NewLine + "The action is irreversible!";
             taskDialog.Page.Caption = "My Application";
-            taskDialog.Page.Icon = TaskDialogIcon.SecurityWarningYellowBar;
-            // [!] Inconsistent naming
-            taskDialog.Page.AllowCancel = true;         // [!] name is confusing
-            taskDialog.Page.CanBeMinimized = true;      // [?] akin to Form.MinimizeBox
+            taskDialog.Page.Icon = TaskDialogIcon.ShieldWarningYellowBar;
+            taskDialog.Page.AllowCancel = true;
+            taskDialog.Page.AllowMinimize = true;
 
             // As noted above, this is confusing and overly verbose
             TaskDialogStandardButton button1 = taskDialog.Page.StandardButtons.Add(TaskDialogResult.Yes);
             TaskDialogStandardButton button2 = taskDialog.Page.StandardButtons.Add(TaskDialogResult.No);
             button1.Enabled = false;
-            button1.ShouldCloseDialog = false;          // [?] Don't quite like the name
+            button1.AllowCloseDialog = false;
             button2.DefaultButton = true;
 
             var verificationText = new TaskDialogCheckBox("I know what I'm doing");
@@ -241,7 +240,7 @@ namespace TaskDialogStudy
 
                 MainInstruction = "Operation in progress...",
                 Text = "Please wait while we are deleting all your customers data...",
-                Icon = TaskDialogIcon.Information,
+                Icon = TaskDialogIcon.ShieldErrorRedBar,
                 SizeToContent = true,
 
                 ProgressBar = new TaskDialogProgressBar(TaskDialogProgressBarState.Marquee),
@@ -250,19 +249,19 @@ namespace TaskDialogStudy
                     CollapsedButtonText = "See &details",
                     ExpandedButtonText = "Hide &details",
                     Text = "Initialising...",
-                    ExpandFooterArea = true             // [?] This name is confusing, had to run an example to find what it does
+                    Expanded = true
                 }
             };
 
             TaskDialogStandardButton button3 = page2.StandardButtons.Add(TaskDialogResult.Close);
             button3.Enabled = false;
-            button3.ShouldCloseDialog = false;
+            button3.AllowCloseDialog = false;
 
             var page3 = new TaskDialogPage
             {
                 MainInstruction = "Success",
                 Text = "All your customers data is gone. Mwuahah!",
-                Icon = TaskDialogIcon.SecuritySuccessGreenBar,
+                Icon = TaskDialogIcon.ShieldSuccessGreenBar,
 
                 CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks
             };
