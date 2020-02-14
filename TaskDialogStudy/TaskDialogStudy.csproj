@@ -9,23 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Accessibility">
-      <HintPath>..\bin\Accessibility.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing.Common">
-      <HintPath>..\bin\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Extensions">
-      <HintPath>..\bin\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <HintPath>..\bin\System.Windows.Forms.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\winforms\src\System.Windows.Forms.Primitives\src\System.Windows.Forms.Primitives.csproj" />
+    <ProjectReference Include="..\..\winforms\src\System.Windows.Forms\src\System.Windows.Forms.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <Compile Update="Properties\Resource1.Designer.cs">
