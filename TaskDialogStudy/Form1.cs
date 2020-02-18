@@ -47,15 +47,23 @@ namespace TaskDialogStudy
             //taskDialog.Page.CustomButtons.Add(button3);
             //var result = taskDialog.ShowDialog(this);
 
-            var result = TaskDialog.ShowDialog(//this,
+            var button = TaskDialog.ShowDialog(//this,
                 text: "Are you sure you want to do this?",
                 mainInstruction: "Stopping the operation might break things...",
                 caption: "Confirmation",
-                buttons: new TaskDialogButton[] { new TaskDialogButton("&Save"), new TaskDialogButton("Do&n't save", defaultButton: true), TaskDialogButton.Cancel, },
+                buttons: new TaskDialogButton[] { new TaskDialogButton("&Save", (TaskDialogResult)500), new TaskDialogButton("Do&n't save", TaskDialogResult.Cancel, defaultButton: true), TaskDialogButton.Cancel, },
                 icon: TaskDialogIcon.ShieldWarningYellowBar
                 );
 
-            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {button}");
+            switch (button.DialogResult)
+            {
+                default:
+                    {
+                        Debug.WriteLine($"{button.Text} button was clicked: {button.DialogResult}");
+                        break;
+                    }
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -83,7 +91,7 @@ namespace TaskDialogStudy
             // [!] I couldn't understand the purpose of TaskDialogStandardButton, it looks like a container for
             // TaskDialogResult, but it provides no real benefit to a caller.
             taskDialog.Page.Buttons.Add(TaskDialogButton.Yes);
-            taskDialog.Page.Buttons.Add(TaskDialogButton.No.Text, defaultButton: true);
+            taskDialog.Page.Buttons.Add(TaskDialogButton.No.Text, TaskDialogResult.No, defaultButton: true);
 
             // [?] It took me sometime to figure how to make hyperlinks
             var footer = new TaskDialogFooter("<a href=\"https://getdot.net/\">Download .NET!</a>");
@@ -122,32 +130,43 @@ namespace TaskDialogStudy
 
             //var result = taskDialog.ShowDialog(this);
 
-            var button = new TaskDialogCommandLinkButton("I&nsane", "259 mines, 16 x 30 title grid", defaultButton: true, allowCloseDialog: false);
-            button.Click += (s, e) =>
+            var button3 = new TaskDialogCommandLinkButton("I&nsane", "259 mines, 16 x 30 title grid", (TaskDialogResult)300, defaultButton: true, allowCloseDialog: false);
+            button3.Click += (s, e) =>
             {
+                Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {button3.DialogResult}");
+
                 var result = TaskDialog.ShowDialog(//this,
                     text: "Are you sure you want to do this?",
                     mainInstruction: "Stopping the operation might break things...",
                     caption: "Confirmation",
-                    buttons: new TaskDialogButton[] { new TaskDialogButton("&Save"), new TaskDialogButton("Do&n't save", defaultButton: true), TaskDialogButton.Cancel, },
+                    buttons: new TaskDialogButton[] { new TaskDialogButton("&Save", TaskDialogResult.Yes), new TaskDialogButton("Do&n't save", TaskDialogResult.No, defaultButton: true), TaskDialogButton.Cancel, },
                     icon: TaskDialogIcon.ShieldWarningYellowBar
                     );
+                Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
             };
 
-            var result = TaskDialog.ShowDialog(//this,
+            var button = TaskDialog.ShowDialog(//this,
                 text: "What level of difficulty do you want to play?",
                 caption: "Minesweeper",
                 buttons: new TaskDialogButton[]
                 {
-                    new TaskDialogCommandLinkButton("&Beginner", "10 mines, 9 x 9 title grid"),
-                    new TaskDialogCommandLinkButton("&Intermediate", "10 mines, 1 x 16 title grid", enabled: true),
-                    button,
+                    new TaskDialogCommandLinkButton("&Beginner", "10 mines, 9 x 9 title grid", TaskDialogResult.Custom1),
+                    new TaskDialogCommandLinkButton("&Intermediate", "10 mines, 1 x 16 title grid", TaskDialogResult.Custom2, enabled: true),
+                    button3,
                     TaskDialogButton.Cancel,
                 },
                 icon: TaskDialogIcon.ShieldBlueBar
                 );
 
-            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {result}");
+            Debug.WriteLine($"{MethodInfo.GetCurrentMethod().Name}: result: {button}");
+            switch (button.DialogResult)
+            {
+                default:
+                    {
+                        Debug.WriteLine($"default: {button.Text} button was clicked: {button.DialogResult}");
+                        break;
+                    }
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
